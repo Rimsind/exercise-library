@@ -174,7 +174,7 @@ const ExerciseLibraryManager = ({ data }) => {
     if (confirm("Are you sure you want to remove this exercise?")) {
       await DeleteData({
         endPoint: "exercise-libraries",
-        deleteId: id,
+        id: id,
       });
       setExercises((prev) => prev.filter((ex) => ex.id !== id));
     }
