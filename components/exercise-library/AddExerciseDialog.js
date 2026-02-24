@@ -21,8 +21,9 @@ import {
 } from "@mui/material";
 import { Close, Image } from "@mui/icons-material";
 import { exerciseLibrary } from "@/lib/exerciseLibrary";
+import { CreateNewData } from "@/utils/ApiFunctions";
 
-const AddExerciseDialog = ({ open, onClose, onExerciseAdded }) => {
+const AddExerciseDialog = ({ open, onClose }) => {
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -126,7 +127,7 @@ const AddExerciseDialog = ({ open, onClose, onExerciseAdded }) => {
     setImagePreview(url);
   };
 
-  const handleSubmit = () => {
+  const handleSubmit = async () => {
     if (
       !formData.name ||
       !formData.category ||
@@ -136,30 +137,37 @@ const AddExerciseDialog = ({ open, onClose, onExerciseAdded }) => {
       return;
     }
 
-    const newExercise = exerciseLibrary.addExercise({
-      name: formData.name,
-      category: formData.category,
-      position: formData.position,
-      targetMuscles: formData.targetMuscles,
-      startingPosition: formData.startingPosition,
-      instructions: formData.instructions,
-      breathing: {
-        exhale: formData.breathingExhale,
-        inhale: formData.breathingInhale,
-      },
-      holdingTime: {
-        min: formData.holdingTimeMin,
-        max: formData.holdingTimeMax,
-        default: formData.holdingTimeDefault,
-      },
-      imageUrl: formData.imageUrl,
-      difficulty: formData.difficulty,
-      precautions: formData.precautions,
-      createdBy: "Dr. Admin",
-    });
+    try {
+      const newExercise = {
+        data: {
+          name: formData.name,
+          category: formData.category,
+          position: formData.position,
+          targetMuscles: formData.targetMuscles.join(", "),
+          startingPosition: formData.startingPosition,
+          instructions: formData.instructions.join(", "),
+          breathingExhale: formData.breathingExhale,
+          breathingInhale: formData.breathingInhale,
+          holdingTimeMin: formData.holdingTimeMin,
+          holdingTimeMax: formData.holdingTimeMax,
+          holdingTimeDefault: formData.holdingTimeDefault,
+          imageUrl: formData.imageUrl,
+          difficulty: formData.difficulty,
+          precautions: formData.precautions.join(", "),
+        },
+      };
 
-    onExerciseAdded?.(newExercise);
-    handleClose();
+      await CreateNewData({
+        endPoint: "exercise-libraries",
+        payload: newExercise,
+      });
+      alert("Exercise added successfully!");
+
+      handleClose();
+    } catch (error) {
+      console.error("Error adding exercise:", error);
+      alert("Failed to add exercise. Please try again.");
+    }
   };
 
   const handleClose = () => {
