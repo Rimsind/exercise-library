@@ -20,6 +20,7 @@ import {
 } from "@mui/material";
 import { Add, Edit, Delete, Visibility } from "@mui/icons-material";
 import AddExerciseDialog from "./AddExerciseDialog";
+import EditExerciseDialog from "./EditExerciseDialog";
 import { exerciseLibrary } from "@/lib/exerciseLibrary";
 import { DeleteData } from "@/utils/ApiFunctions";
 
@@ -43,6 +44,7 @@ const ExerciseLibraryManager = ({ data }) => {
         id: item.id,
         name: e.name,
         category: e.category,
+        subCategory: e.subCategory || "",
         position: e.position,
         startingPosition: e.startingPosition,
         targetMuscles: e.targetMuscles
@@ -60,7 +62,7 @@ const ExerciseLibraryManager = ({ data }) => {
         holdingTimeDefault: e.holdingTimeDefault,
         imageUrl: e.imageUrl,
         difficulty: e.difficulty,
-        precautions: e.precautions,
+        precautions: e.precautions ? e.precautions.split(",").map((p)=>p.trim()) : [],
       };
     });
 
@@ -95,6 +97,24 @@ const ExerciseLibraryManager = ({ data }) => {
   const handleCloseViewDialog = () => {
     setOpenViewDialog(false);
     setSelectedExercise(null);
+  };
+
+  const [openEditDialog, setOpenEditDialog] = useState(false);
+  const [exerciseToEdit, setExerciseToEdit] = useState(null);
+
+  const handleOpenEditDialog = (exercise) => {
+    setExerciseToEdit(exercise);
+    setOpenEditDialog(true);
+  };
+
+  const handleCloseEditDialog = () => {
+    setOpenEditDialog(false);
+    setExerciseToEdit(null);
+  };
+
+  const handleUpdatedExercise = (updated) => {
+    setExercises((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
+    handleCloseEditDialog();
   };
 
   const handleDeleteExercise = async (id) => {
@@ -276,6 +296,20 @@ const ExerciseLibraryManager = ({ data }) => {
                     <Button
                       size="small"
                       variant="outlined"
+                      startIcon={<Edit />}
+                      onClick={() => handleOpenEditDialog(exercise)}
+                      sx={{
+                        flex: 1,
+                        color: "#2E5E99",
+                        borderColor: "#2E5E99",
+                        textTransform: "none",
+                      }}
+                    >
+                      Edit
+                    </Button>
+                    <Button
+                      size="small"
+                      variant="outlined"
                       startIcon={<Delete />}
                       onClick={() => handleDeleteExercise(exercise.id)}
                       sx={{
@@ -306,6 +340,14 @@ const ExerciseLibraryManager = ({ data }) => {
       {/* Add Exercise Dialog */}
       <AddExerciseDialog open={openAddDialog} onClose={handleCloseAddDialog} />
 
+      {/* Edit Exercise Dialog */}
+      <EditExerciseDialog
+        open={openEditDialog}
+        onClose={handleCloseEditDialog}
+        exercise={exerciseToEdit}
+        onUpdated={handleUpdatedExercise}
+      />
+
       {/* View Exercise Dialog */}
       {selectedExercise && (
         <Dialog
@@ -331,6 +373,13 @@ const ExerciseLibraryManager = ({ data }) => {
                 }}
               />
             )}
+
+            <Box sx={{ mb: 2, display: 'flex', gap: 1, alignItems: 'center' }}>
+              <Chip label={selectedExercise.category} size="small" sx={{ backgroundColor: '#e8f5e9', color: '#2E5E99' }} />
+              {selectedExercise.subCategory && (
+                <Chip label={selectedExercise.subCategory} size="small" sx={{ backgroundColor: '#fff3e0', color: '#2E5E99' }} />
+              )}
+            </Box>
 
             <Box sx={{ mb: 2 }}>
               <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>

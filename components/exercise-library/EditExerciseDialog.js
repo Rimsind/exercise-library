@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -20,9 +20,9 @@ import {
   CardMedia,
 } from "@mui/material";
 import { Close } from "@mui/icons-material";
-import { CreateNewData } from "@/utils/ApiFunctions";
+import { UpdateData } from "@/utils/ApiFunctions";
 
-const AddExerciseDialog = ({ open, onClose }) => {
+const EditExerciseDialog = ({ open, onClose, exercise, onUpdated }) => {
   const [formData, setFormData] = useState({
     name: "",
     category: "",
@@ -58,13 +58,30 @@ const AddExerciseDialog = ({ open, onClose }) => {
       "Finger & Thumb",
     ],
     "Lower Extremity": ["Hip", "Knee", "Ankle", "Foot"],
-    Spine: [
-      "Cervical Spine",
-      "Thoracic Spine",
-      "Lumbar Spine",
-      "Sacroiliac Joint",
-    ],
+    Spine: ["Cervical Spine", "Thoracic Spine", "Lumbar Spine", "Sacroiliac Joint"],
   };
+
+  useEffect(() => {
+    if (!exercise) return;
+    setFormData({
+      name: exercise.name || "",
+      category: exercise.category || "",
+      subCategory: exercise.subCategory || "",
+      position: exercise.position || "",
+      targetMuscles: exercise.targetMuscles || [],
+      startingPosition: exercise.startingPosition || "",
+      instructions: exercise.instructions || [],
+      breathingExhale: exercise.breathing?.exhale || "",
+      breathingInhale: exercise.breathing?.inhale || "",
+      holdingTimeMin: exercise.holdingTimeMin || 2,
+      holdingTimeMax: exercise.holdingTimeMax || 10,
+      holdingTimeDefault: exercise.holdingTimeDefault || 5,
+      imageUrl: exercise.imageUrl || "",
+      difficulty: exercise.difficulty || "beginner",
+      precautions: exercise.precautions || [],
+    });
+    setImagePreview(exercise.imageUrl || "");
+  }, [exercise]);
 
   const handleChange = (e) => {
     const { name, value } = e.target;
@@ -136,6 +153,8 @@ const AddExerciseDialog = ({ open, onClose }) => {
   };
 
   const handleSubmit = async () => {
+    if (!exercise) return;
+
     if (
       !formData.name ||
       !formData.category ||
@@ -147,7 +166,7 @@ const AddExerciseDialog = ({ open, onClose }) => {
     }
 
     try {
-      const newExercise = {
+      const payload = {
         data: {
           name: formData.name,
           category: formData.category,
@@ -167,37 +186,51 @@ const AddExerciseDialog = ({ open, onClose }) => {
         },
       };
 
-      await CreateNewData({
+      const res = await UpdateData({
         endPoint: "exercise-libraries",
-        payload: newExercise,
+        id: exercise.id,
+        payload,
       });
 
-      alert("Exercise added successfully!");
+      const updated = res?.data?.data?.attributes;
+      const updatedExercise = {
+        id: res?.data?.data?.id || exercise.id,
+        name: updated?.name || formData.name,
+        category: updated?.category || formData.category,
+        subCategory: updated?.subCategory || formData.subCategory,
+        position: updated?.position || formData.position,
+        targetMuscles: updated?.targetMuscles
+          ? updated.targetMuscles.split(",").map((m) => m.trim())
+          : formData.targetMuscles,
+        startingPosition: updated?.startingPosition || formData.startingPosition,
+        instructions: updated?.instructions
+          ? updated.instructions.split(",").map((i) => i.trim())
+          : formData.instructions,
+        breathing: {
+          inhale: updated?.breathingInhale || formData.breathingInhale,
+          exhale: updated?.breathingExhale || formData.breathingExhale,
+        },
+        holdingTimeMin: updated?.holdingTimeMin || formData.holdingTimeMin,
+        holdingTimeMax: updated?.holdingTimeMax || formData.holdingTimeMax,
+        holdingTimeDefault:
+          updated?.holdingTimeDefault || formData.holdingTimeDefault,
+        imageUrl: updated?.imageUrl || formData.imageUrl,
+        difficulty: updated?.difficulty || formData.difficulty,
+        precautions: updated?.precautions
+          ? updated.precautions.split(",").map((p) => p.trim())
+          : formData.precautions,
+      };
+
+      onUpdated && onUpdated(updatedExercise);
+      alert("Exercise updated successfully!");
       handleClose();
     } catch (error) {
-      console.error("Error adding exercise:", error);
-      alert("Failed to add exercise. Please try again.");
+      console.error("Error updating exercise:", error);
+      alert("Failed to update exercise. Please try again.");
     }
   };
 
   const handleClose = () => {
-    setFormData({
-      name: "",
-      category: "",
-      subCategory: "",
-      position: "",
-      targetMuscles: [],
-      startingPosition: "",
-      instructions: [],
-      breathingExhale: "",
-      breathingInhale: "",
-      holdingTimeMin: 2,
-      holdingTimeMax: 10,
-      holdingTimeDefault: 5,
-      imageUrl: "",
-      difficulty: "beginner",
-      precautions: [],
-    });
     setCurrentInstruction("");
     setCurrentPrecaution("");
     setCurrentMuscle("");
@@ -222,13 +255,12 @@ const AddExerciseDialog = ({ open, onClose }) => {
           alignItems: "center",
         }}
       >
-        Add New Exercise to Library
+        Edit Exercise
         <Close onClick={handleClose} sx={{ cursor: "pointer" }} />
       </DialogTitle>
 
       <DialogContent sx={{ overflowY: "auto", pt: 3 }}>
         <Grid container spacing={2}>
-          {/* BASIC INFO */}
           <Grid size={{ xs: 12 }}>
             <Typography
               variant="h6"
@@ -526,11 +558,7 @@ const AddExerciseDialog = ({ open, onClose }) => {
             </Box>
           </Grid>
 
-          {/* IMAGE */}
           <Grid size={{ xs: 12 }}>
-            <Typography variant="h6" sx={{ fontWeight: 600, color: "#2E5E99" }}>
-              Exercise Image
-            </Typography>
             <TextField
               fullWidth
               label="Image URL"
@@ -567,11 +595,11 @@ const AddExerciseDialog = ({ open, onClose }) => {
           variant="contained"
           sx={{ backgroundColor: "#2E5E99" }}
         >
-          Add to Library
+          Update Exercise
         </Button>
       </DialogActions>
     </Dialog>
   );
 };
 
-export default AddExerciseDialog;
+export default EditExerciseDialog;
