@@ -62,7 +62,9 @@ const ExerciseLibraryManager = ({ data }) => {
         holdingTimeDefault: e.holdingTimeDefault,
         imageUrl: e.imageUrl,
         difficulty: e.difficulty,
-        precautions: e.precautions ? e.precautions.split(",").map((p)=>p.trim()) : [],
+        precautions: e.precautions
+          ? e.precautions.split(",").map((p) => p.trim())
+          : [],
       };
     });
 
@@ -113,7 +115,9 @@ const ExerciseLibraryManager = ({ data }) => {
   };
 
   const handleUpdatedExercise = (updated) => {
-    setExercises((prev) => prev.map((e) => (e.id === updated.id ? updated : e)));
+    setExercises((prev) =>
+      prev.map((e) => (e.id === updated.id ? updated : e)),
+    );
     handleCloseEditDialog();
   };
 
@@ -230,6 +234,15 @@ const ExerciseLibraryManager = ({ data }) => {
                   <Box sx={{ mb: 2 }}>
                     <Chip
                       label={exercise.category}
+                      size="small"
+                      sx={{
+                        backgroundColor: "#e8f5e9",
+                        color: "#2E5E99",
+                        mr: 1,
+                      }}
+                    />
+                    <Chip
+                      label={exercise.subCategory}
                       size="small"
                       sx={{
                         backgroundColor: "#e8f5e9",
@@ -374,10 +387,18 @@ const ExerciseLibraryManager = ({ data }) => {
               />
             )}
 
-            <Box sx={{ mb: 2, display: 'flex', gap: 1, alignItems: 'center' }}>
-              <Chip label={selectedExercise.category} size="small" sx={{ backgroundColor: '#e8f5e9', color: '#2E5E99' }} />
+            <Box sx={{ mb: 2, display: "flex", gap: 1, alignItems: "center" }}>
+              <Chip
+                label={selectedExercise.category}
+                size="small"
+                sx={{ backgroundColor: "#e8f5e9", color: "#2E5E99" }}
+              />
               {selectedExercise.subCategory && (
-                <Chip label={selectedExercise.subCategory} size="small" sx={{ backgroundColor: '#fff3e0', color: '#2E5E99' }} />
+                <Chip
+                  label={selectedExercise.subCategory}
+                  size="small"
+                  sx={{ backgroundColor: "#fff3e0", color: "#2E5E99" }}
+                />
               )}
             </Box>
 

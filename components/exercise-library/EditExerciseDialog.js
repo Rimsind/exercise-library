@@ -58,7 +58,12 @@ const EditExerciseDialog = ({ open, onClose, exercise, onUpdated }) => {
       "Finger & Thumb",
     ],
     "Lower Extremity": ["Hip", "Knee", "Ankle", "Foot"],
-    Spine: ["Cervical Spine", "Thoracic Spine", "Lumbar Spine", "Sacroiliac Joint"],
+    Spine: [
+      "Cervical Spine",
+      "Thoracic Spine",
+      "Lumbar Spine",
+      "Sacroiliac Joint",
+    ],
   };
 
   useEffect(() => {
@@ -202,7 +207,8 @@ const EditExerciseDialog = ({ open, onClose, exercise, onUpdated }) => {
         targetMuscles: updated?.targetMuscles
           ? updated.targetMuscles.split(",").map((m) => m.trim())
           : formData.targetMuscles,
-        startingPosition: updated?.startingPosition || formData.startingPosition,
+        startingPosition:
+          updated?.startingPosition || formData.startingPosition,
         instructions: updated?.instructions
           ? updated.instructions.split(",").map((i) => i.trim())
           : formData.instructions,
