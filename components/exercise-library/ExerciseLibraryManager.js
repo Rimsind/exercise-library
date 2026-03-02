@@ -202,7 +202,7 @@ const ExerciseLibraryManager = ({ data }) => {
       <Grid container spacing={3}>
         {filteredExercises.length > 0 ? (
           filteredExercises.map((exercise) => (
-            <Grid size={{ xs: 12, sm: 6, md: 4 }} key={exercise.id}>
+            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={exercise.id}>
               <Card
                 sx={{
                   height: "100%",
