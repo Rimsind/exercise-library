@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import React, { useState } from "react"
+import React, { useState, useEffect } from "react";
 import {
   Dialog,
   DialogTitle,
@@ -17,53 +17,81 @@ import {
   Paper,
   Divider,
   Grid,
-} from "@mui/material"
-import { Add, Close } from "@mui/icons-material"
+} from "@mui/material";
+import { Add, Close } from "@mui/icons-material";
 
-const EducationForm = ({ open, onClose, onSubmit, editingData = null }) => {
-  const regions = {
-    "Upper Extremity": [
-      "Shoulder Girdle",
-      "Shoulder",
-      "Elbow",
-      "Forearm & Wrist",
-      "Finger & Thumb",
-    ],
-    "Lower Extremity": ["Hip", "Knee", "Ankle", "Foot"],
-    Spine: [
-      "Cervical Spine",
-      "Thoracic Spine",
-      "Lumbar Spine",
-      "Sacroiliac Joint",
-    ],
-  }
+const regions = {
+  "Upper Extremity": [
+    "Shoulder Girdle",
+    "Shoulder",
+    "Elbow",
+    "Forearm & Wrist",
+    "Finger & Thumb",
+  ],
+  "Lower Extremity": ["Hip", "Knee", "Ankle", "Foot"],
+  Spine: [
+    "Cervical Spine",
+    "Thoracic Spine",
+    "Lumbar Spine",
+    "Sacroiliac Joint",
+  ],
+};
+const stages = ["Acute", "Sub-Acute", "Chronic"];
+const educationTypes = ["General Education", "Region Wise Education"];
 
-  const [formData, setFormData] = useState(
-    editingData || {
-      educationType: "General Education",
-      region: "Upper Extremity",
-      area: "Shoulder Girdle",
-      title: "",
-      stage: "Acute",
-      keyTreatment: "",
-      generalInstruction: "",
-      modalities: "",
-      restrictions: "",
+const EducationForm = ({ open, onClose, onSubmit, editingData }) => {
+  const [formData, setFormData] = useState({
+    educationType: "General Education",
+    region: "Upper Extremity",
+    area: "Shoulder Girdle",
+    title: "",
+    stage: "Acute",
+    keyTreatment: "",
+    generalInstruction: "",
+    modalities: "",
+    restrictions: "",
+  });
+
+  // Keep form in sync when editingData changes or dialog opens
+  useEffect(() => {
+    if (editingData) {
+      setFormData({
+        educationType:
+          editingData?.attributes?.educationType || "General Education",
+        region: editingData?.attributes?.region || "Upper Extremity",
+        area: editingData?.attributes?.area || "Shoulder Girdle",
+        title: editingData?.attributes?.title || "",
+        stage: editingData?.attributes?.stage || "Acute",
+        keyTreatment: editingData?.attributes?.keyTreatment || "",
+        generalInstruction: editingData?.attributes?.generalInstruction || "",
+        modalities: editingData?.attributes?.modalities || "",
+        restrictions: editingData?.attributes?.restrictions || "",
+      });
+    } else if (open === false) {
+      // reset when dialog fully closed
+      setFormData({
+        educationType: "General Education",
+        region: "Upper Extremity",
+        area: "Shoulder Girdle",
+        title: "",
+        stage: "Acute",
+        keyTreatment: "",
+        generalInstruction: "",
+        modalities: "",
+        restrictions: "",
+      });
     }
-  )
-
-  const stages = ["Acute", "Sub-Acute", "Chronic"]
-  const educationTypes = ["General Education", "Region Wise Education"]
+  }, [editingData, open]);
 
   const handleChange = (e) => {
-    const { name, value } = e.target
+    const { name, value } = e.target;
     if (name === "region") {
       // When region changes, reset area to first option of new region
       setFormData((prev) => ({
         ...prev,
         region: value,
         area: regions[value][0],
-      }))
+      }));
     } else if (name === "educationType") {
       // When education type changes, reset region and area for Region Wise Education
       setFormData((prev) => ({
@@ -71,27 +99,27 @@ const EducationForm = ({ open, onClose, onSubmit, editingData = null }) => {
         educationType: value,
         region: "Upper Extremity",
         area: "Shoulder Girdle",
-      }))
+      }));
     } else {
       setFormData((prev) => ({
         ...prev,
         [name]: value,
-      }))
+      }));
     }
-  }
+  };
 
   const handleSubmit = () => {
     // Validate education type
     if (!formData.educationType.trim()) {
-      alert("Please select an education type")
-      return
+      alert("Please select an education type");
+      return;
     }
 
     // Validate region and area only for Region Wise Education
     if (formData.educationType === "Region Wise Education") {
       if (!formData.region.trim() || !formData.area.trim()) {
-        alert("Please select region and area for Region Wise Education")
-        return
+        alert("Please select region and area for Region Wise Education");
+        return;
       }
     }
 
@@ -103,10 +131,10 @@ const EducationForm = ({ open, onClose, onSubmit, editingData = null }) => {
       !formData.modalities.trim() ||
       !formData.restrictions.trim()
     ) {
-      alert("Please fill all required fields")
-      return
+      alert("Please fill all required fields");
+      return;
     }
-    onSubmit(formData)
+    onSubmit(formData);
     setFormData({
       educationType: "General Education",
       region: "Upper Extremity",
@@ -117,8 +145,8 @@ const EducationForm = ({ open, onClose, onSubmit, editingData = null }) => {
       generalInstruction: "",
       modalities: "",
       restrictions: "",
-    })
-  }
+    });
+  };
 
   const handleClose = () => {
     setFormData({
@@ -131,9 +159,9 @@ const EducationForm = ({ open, onClose, onSubmit, editingData = null }) => {
       generalInstruction: "",
       modalities: "",
       restrictions: "",
-    })
-    onClose()
-  }
+    });
+    onClose();
+  };
 
   return (
     <Dialog open={open} onClose={handleClose} maxWidth="sm" fullWidth>
@@ -360,7 +388,7 @@ const EducationForm = ({ open, onClose, onSubmit, editingData = null }) => {
         </Button>
       </DialogActions>
     </Dialog>
-  )
-}
+  );
+};
 
-export default EducationForm
+export default EducationForm;

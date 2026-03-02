@@ -1,7 +1,7 @@
 "use client";
 
-const Layout = ({ children }) => {
-  return <>{children}</>;
-};
+import DashboardLayout from "@/components/layout/DashboardLayout";
 
-export default Layout;
+export default function Layout({ children }) {
+  return <DashboardLayout>{children}</DashboardLayout>;
+}

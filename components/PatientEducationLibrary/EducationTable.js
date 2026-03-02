@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import React from "react"
+import React from "react";
 import {
   Table,
   TableBody,
@@ -13,33 +13,38 @@ import {
   Chip,
   Box,
   Typography,
-} from "@mui/material"
-import { Eye, Edit2, Trash2 } from "lucide-react"
+} from "@mui/material";
+import { Eye, Edit2, Trash2 } from "lucide-react";
 
 const EducationTable = ({ educations, onView, onEdit, onDelete }) => {
   const getStageColor = (stage) => {
     switch (stage) {
       case "Acute":
-        return { bg: "#FFEBEE", text: "#D32F2F" }
+        return { bg: "#FFEBEE", text: "#D32F2F" };
       case "Sub-Acute":
-        return { bg: "#FFF3E0", text: "#F57C00" }
+        return { bg: "#FFF3E0", text: "#F57C00" };
       case "Chronic":
-        return { bg: "#E8F5E9", text: "#388E3C" }
+        return { bg: "#E8F5E9", text: "#388E3C" };
       default:
-        return { bg: "#F5F5F5", text: "#666" }
+        return { bg: "#F5F5F5", text: "#666" };
     }
-  }
+  };
 
   if (educations.length === 0) {
     return (
       <Paper sx={{ p: 3, textAlign: "center" }}>
-        <Typography color="textSecondary">No education materials found</Typography>
+        <Typography color="textSecondary">
+          No education materials found
+        </Typography>
       </Paper>
-    )
+    );
   }
 
   return (
-    <TableContainer component={Paper} sx={{ borderRadius: "12px", overflow: "hidden" }}>
+    <TableContainer
+      component={Paper}
+      sx={{ borderRadius: "12px", overflow: "hidden" }}
+    >
       <Table sx={{ minWidth: 1050 }}>
         <TableHead>
           <TableRow
@@ -69,7 +74,7 @@ const EducationTable = ({ educations, onView, onEdit, onDelete }) => {
         </TableHead>
         <TableBody>
           {educations.map((education, index) => {
-            const stageColor = getStageColor(education.stage)
+            const stageColor = getStageColor(education?.attributes?.stage);
             return (
               <TableRow
                 key={education.id}
@@ -106,11 +111,11 @@ const EducationTable = ({ educations, onView, onEdit, onDelete }) => {
                     whiteSpace: "nowrap",
                   }}
                 >
-                  {education.title}
+                  {education?.attributes?.title}
                 </TableCell>
                 <TableCell align="center" sx={{ padding: "14px 12px" }}>
                   <Chip
-                    label={education.stage}
+                    label={education?.attributes?.stage}
                     sx={{
                       backgroundColor: stageColor.bg,
                       color: stageColor.text,
@@ -191,12 +196,12 @@ const EducationTable = ({ educations, onView, onEdit, onDelete }) => {
                   </Box>
                 </TableCell>
               </TableRow>
-            )
+            );
           })}
         </TableBody>
       </Table>
     </TableContainer>
-  )
-}
+  );
+};
 
-export default EducationTable
+export default EducationTable;

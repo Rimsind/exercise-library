@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import React, { useState, useMemo } from "react"
+import React, { useState, useMemo } from "react";
 import {
   Box,
   Grid,
@@ -16,175 +16,124 @@ import {
   Container,
   Pagination,
   Stack,
-} from "@mui/material"
-import { LayoutGrid, List } from "lucide-react"
-import EducationForm from "./EducationForm"
-import EducationCard from "./EducationCard"
-import EducationTable from "./EducationTable"
-import FilterBar from "./FilterBar"
+} from "@mui/material";
+import { LayoutGrid, List } from "lucide-react";
+import EducationForm from "./EducationForm";
+import EducationCard from "./EducationCard";
+import EducationTable from "./EducationTable";
+import FilterBar from "./FilterBar";
+import { CreateNewData, DeleteData, UpdateData } from "@/utils/ApiFunctions";
 
-const PatientEducationLibraryContent = () => {
-  const [educations, setEducations] = useState([
-    {
-      id: 1,
-      educationType: "Region Wise Education",
-      region: "Lower Extremity",
-      area: "Knee",
-      title: "Knee Pain Early Rehab",
-      stage: "Acute",
-      keyTreatment: "Cryotherapy + Immobilization",
-      generalInstruction: "Avoid weight bearing, use support",
-      modalities: "Ice pack, Ultrasound",
-      restrictions: "No running, no squatting",
-    },
-    {
-      id: 2,
-      educationType: "Region Wise Education",
-      region: "Lower Extremity",
-      area: "Knee",
-      title: "Knee Mobility Training",
-      stage: "Sub-Acute",
-      keyTreatment: "ROM + Partial Weight Bearing",
-      generalInstruction: "Start walking with walker",
-      modalities: "Heat + TENS",
-      restrictions: "Avoid stairs",
-    },
-    {
-      id: 3,
-      educationType: "General Education",
-      region: "Lower Extremity",
-      area: "Knee",
-      title: "Knee Strength Program",
-      stage: "Chronic",
-      keyTreatment: "Strengthening + Proprioception",
-      generalInstruction: "Regular exercise & posture care",
-      modalities: "IFT + Exercise Therapy",
-      restrictions: "Avoid high impact sports",
-    },
-    {
-      id: 4,
-      educationType: "Region Wise Education",
-      region: "Upper Extremity",
-      area: "Shoulder",
-      title: "Shoulder Impingement Early Stage",
-      stage: "Acute",
-      keyTreatment: "Rest + Anti-inflammatory",
-      generalInstruction: "Limit overhead activities",
-      modalities: "Cold therapy, Traction",
-      restrictions: "No heavy lifting",
-    },
-    {
-      id: 5,
-      educationType: "General Education",
-      region: "Spine",
-      area: "Lumbar Spine",
-      title: "Lower Back Pain Management",
-      stage: "Sub-Acute",
-      keyTreatment: "Stability training + Mobilization",
-      generalInstruction: "Gradual return to activity",
-      modalities: "TENS, Manual therapy",
-      restrictions: "Avoid twisting motions",
-    },
-    {
-      id: 6,
-      educationType: "Region Wise Education",
-      region: "Spine",
-      area: "Cervical Spine",
-      title: "Neck Pain Rehabilitation",
-      stage: "Chronic",
-      keyTreatment: "Posture correction + Strengthening",
-      generalInstruction: "Regular neck exercises",
-      modalities: "Heat therapy, Exercise",
-      restrictions: "Avoid prolonged static postures",
-    },
-  ])
-
-  const [formOpen, setFormOpen] = useState(false)
-  const [searchTerm, setSearchTerm] = useState("")
-  const [selectedEducationType, setSelectedEducationType] = useState("")
-  const [selectedRegion, setSelectedRegion] = useState("")
-  const [selectedArea, setSelectedArea] = useState("")
-  const [selectedStages, setSelectedStages] = useState([])
-  const [editingData, setEditingData] = useState(null)
-  const [viewOpen, setViewOpen] = useState(false)
-  const [viewingData, setViewingData] = useState(null)
-  const [viewMode, setViewMode] = useState("grid")
-  const [currentPage, setCurrentPage] = useState(1)
-  const itemsPerPage = 9
+const PatientEducationLibraryContent = ({ data }) => {
+  const [formOpen, setFormOpen] = useState(false);
+  const [searchTerm, setSearchTerm] = useState("");
+  const [selectedEducationType, setSelectedEducationType] = useState("");
+  const [selectedRegion, setSelectedRegion] = useState("");
+  const [selectedArea, setSelectedArea] = useState("");
+  const [selectedStages, setSelectedStages] = useState([]);
+  const [editingData, setEditingData] = useState(null);
+  const [viewOpen, setViewOpen] = useState(false);
+  const [viewingData, setViewingData] = useState(null);
+  const [viewMode, setViewMode] = useState("grid");
+  const [currentPage, setCurrentPage] = useState(1);
+  const itemsPerPage = 9;
 
   // Filter educations based on search, education type, region, area, and stage
   const filteredEducations = useMemo(() => {
-    return educations.filter((education) => {
-      const matchesSearch = education.title
+    return data.filter((education) => {
+      const matchesSearch = education?.attributes?.title
         .toLowerCase()
-        .includes(searchTerm.toLowerCase())
-      const matchesEducationType = !selectedEducationType || education.educationType === selectedEducationType
-      const matchesRegion = !selectedRegion || education.region === selectedRegion
-      const matchesArea = !selectedArea || education.area === selectedArea
+        .includes(searchTerm.toLowerCase());
+      const matchesEducationType =
+        !selectedEducationType ||
+        education?.attributes?.educationType === selectedEducationType;
+      const matchesRegion =
+        !selectedRegion || education?.attributes?.region === selectedRegion;
+      const matchesArea =
+        !selectedArea || education?.attributes?.area === selectedArea;
       const matchesStage =
-        selectedStages.length === 0 || selectedStages.includes(education.stage)
-      return matchesSearch && matchesEducationType && matchesRegion && matchesArea && matchesStage
-    })
-  }, [educations, searchTerm, selectedEducationType, selectedRegion, selectedArea, selectedStages])
+        selectedStages.length === 0 ||
+        selectedStages.includes(education?.attributes?.stage);
+      return (
+        matchesSearch &&
+        matchesEducationType &&
+        matchesRegion &&
+        matchesArea &&
+        matchesStage
+      );
+    });
+  }, [
+    data,
+    searchTerm,
+    selectedEducationType,
+    selectedRegion,
+    selectedArea,
+    selectedStages,
+  ]);
 
   const handleAddNew = () => {
-    setEditingData(null)
-    setFormOpen(true)
-  }
+    setEditingData(null);
+    setFormOpen(true);
+  };
 
   const handleFormClose = () => {
-    setFormOpen(false)
-    setEditingData(null)
-  }
+    setFormOpen(false);
+    setEditingData(null);
+  };
 
-  const handleFormSubmit = (formData) => {
+  const handleFormSubmit = async (formData) => {
     if (editingData) {
       // Update existing
-      setEducations((prev) =>
-        prev.map((edu) =>
-          edu.id === editingData.id ? { ...formData, id: edu.id } : edu
-        )
-      )
+      await UpdateData({
+        endPoint: "patient-education-libraries",
+        id: editingData.id,
+        payload: {
+          data: formData,
+        },
+      });
     } else {
-      // Add new
-      const newEducation = {
-        ...formData,
-        id: Math.max(...educations.map((e) => e.id), 0) + 1,
-      }
-      setEducations((prev) => [newEducation, ...prev])
+      await CreateNewData({
+        endPoint: "patient-education-libraries",
+        payload: {
+          data: formData,
+        },
+      });
     }
-    setCurrentPage(1) // Reset to first page
-    handleFormClose()
-  }
+    setCurrentPage(1); // Reset to first page
+    handleFormClose();
+  };
 
   // Pagination logic
-  const totalPages = Math.ceil(filteredEducations.length / itemsPerPage)
-  const startIndex = (currentPage - 1) * itemsPerPage
+  const totalPages = Math.ceil(filteredEducations.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
   const paginatedEducations = filteredEducations.slice(
     startIndex,
-    startIndex + itemsPerPage
-  )
+    startIndex + itemsPerPage,
+  );
 
   const handleEdit = (education) => {
-    setEditingData(education)
-    setFormOpen(true)
-  }
+    setEditingData(education);
+    setFormOpen(true);
+  };
 
-  const handleDelete = (id) => {
+  const handleDelete = async (id) => {
     if (confirm("Are you sure you want to delete this education material?")) {
-      setEducations((prev) => prev.filter((edu) => edu.id !== id))
+      await DeleteData({
+        endPoint: `patient-education-libraries`,
+        id: id,
+      });
     }
-  }
+  };
 
   const handleView = (education) => {
-    setViewingData(education)
-    setViewOpen(true)
-  }
+    setViewingData(education);
+    setViewOpen(true);
+  };
 
   const handleViewClose = () => {
-    setViewOpen(false)
-    setViewingData(null)
-  }
+    setViewOpen(false);
+    setViewingData(null);
+  };
 
   return (
     <Box sx={{ width: "100%" }}>
@@ -208,7 +157,8 @@ const PatientEducationLibraryContent = () => {
             fontSize: { xs: "12px", md: "14px" },
           }}
         >
-          Create, manage, and organize rehabilitation protocols by stage (Acute, Sub-Acute, Chronic)
+          Create, manage, and organize rehabilitation protocols by stage (Acute,
+          Sub-Acute, Chronic)
         </Typography>
       </Box>
 
@@ -276,7 +226,10 @@ const PatientEducationLibraryContent = () => {
             No education materials found
           </Typography>
           <Typography variant="body2" sx={{ color: "#bbb" }}>
-            {searchTerm || selectedRegion || selectedArea || selectedStages.length > 0
+            {searchTerm ||
+            selectedRegion ||
+            selectedArea ||
+            selectedStages.length > 0
               ? "Try adjusting your filters"
               : "Click 'Add New Education' to create your first material"}
           </Typography>
@@ -382,7 +335,7 @@ const PatientEducationLibraryContent = () => {
                   Title
                 </Typography>
                 <Typography sx={{ color: "#333", fontWeight: 600 }}>
-                  {viewingData.title}
+                  {viewingData?.attributes?.title}
                 </Typography>
               </Box>
 
@@ -399,7 +352,7 @@ const PatientEducationLibraryContent = () => {
                   Stage
                 </Typography>
                 <Typography sx={{ color: "#333", fontWeight: 600 }}>
-                  {viewingData.stage}
+                  {viewingData?.attributes?.stage}
                 </Typography>
               </Box>
 
@@ -416,7 +369,7 @@ const PatientEducationLibraryContent = () => {
                   Key Treatment
                 </Typography>
                 <Typography sx={{ color: "#333" }}>
-                  {viewingData.keyTreatment}
+                  {viewingData?.attributes?.keyTreatment}
                 </Typography>
               </Box>
 
@@ -433,7 +386,7 @@ const PatientEducationLibraryContent = () => {
                   General Instruction
                 </Typography>
                 <Typography sx={{ color: "#333" }}>
-                  {viewingData.generalInstruction}
+                  {viewingData?.attributes?.generalInstruction}
                 </Typography>
               </Box>
 
@@ -450,7 +403,7 @@ const PatientEducationLibraryContent = () => {
                   Modalities
                 </Typography>
                 <Typography sx={{ color: "#333" }}>
-                  {viewingData.modalities}
+                  {viewingData?.attributes?.modalities}
                 </Typography>
               </Box>
 
@@ -467,20 +420,24 @@ const PatientEducationLibraryContent = () => {
                   Restrictions
                 </Typography>
                 <Typography sx={{ color: "#333" }}>
-                  {viewingData.restrictions}
+                  {viewingData?.attributes?.restrictions}
                 </Typography>
               </Box>
             </Box>
           )}
         </DialogContent>
         <DialogActions sx={{ p: 2 }}>
-          <Button onClick={handleViewClose} variant="contained" sx={{ backgroundColor: "#0046a6" }}>
+          <Button
+            onClick={handleViewClose}
+            variant="contained"
+            sx={{ backgroundColor: "#0046a6" }}
+          >
             Close
           </Button>
         </DialogActions>
       </Dialog>
     </Box>
-  )
-}
+  );
+};
 
-export default PatientEducationLibraryContent
+export default PatientEducationLibraryContent;

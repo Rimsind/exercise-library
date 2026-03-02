@@ -1,6 +1,6 @@
-"use client"
+"use client";
 
-import React from "react"
+import React from "react";
 import {
   Card,
   CardContent,
@@ -12,25 +12,25 @@ import {
   Divider,
   Grid,
   Paper,
-} from "@mui/material"
-import { Eye, Edit2, Trash2 } from "lucide-react"
+} from "@mui/material";
+import { Eye, Edit2, Trash2 } from "lucide-react";
 
 const EducationCard = ({ education, onView, onEdit, onDelete }) => {
   // Stage badge colors
   const getStageColor = (stage) => {
     switch (stage) {
       case "Acute":
-        return { bg: "#FFEBEE", text: "#D32F2F", border: "#EF5350" }
+        return { bg: "#FFEBEE", text: "#D32F2F", border: "#EF5350" };
       case "Sub-Acute":
-        return { bg: "#FFF3E0", text: "#F57C00", border: "#FFB74D" }
+        return { bg: "#FFF3E0", text: "#F57C00", border: "#FFB74D" };
       case "Chronic":
-        return { bg: "#E8F5E9", text: "#388E3C", border: "#81C784" }
+        return { bg: "#E8F5E9", text: "#388E3C", border: "#81C784" };
       default:
-        return { bg: "#F5F5F5", text: "#666", border: "#999" }
+        return { bg: "#F5F5F5", text: "#666", border: "#999" };
     }
-  }
+  };
 
-  const stageColor = getStageColor(education.stage)
+  const stageColor = getStageColor(education?.attributes?.stage);
 
   return (
     <Card
@@ -57,7 +57,7 @@ const EducationCard = ({ education, onView, onEdit, onDelete }) => {
         }}
       >
         <Chip
-          label={education.stage}
+          label={education?.attributes?.stage}
           sx={{
             backgroundColor: stageColor.bg,
             color: stageColor.text,
@@ -82,7 +82,7 @@ const EducationCard = ({ education, onView, onEdit, onDelete }) => {
             lineHeight: 1.4,
           }}
         >
-          {education.title}
+          {education?.attributes?.title}
         </Typography>
 
         <Divider sx={{ mb: 2 }} />
@@ -90,7 +90,7 @@ const EducationCard = ({ education, onView, onEdit, onDelete }) => {
         {/* Instructions Grid */}
         <Grid container spacing={2}>
           {/* Key Treatment */}
-          <Grid size={{ xs: 12}}>
+          <Grid size={{ xs: 12 }}>
             <Paper
               elevation={0}
               sx={{
@@ -121,7 +121,7 @@ const EducationCard = ({ education, onView, onEdit, onDelete }) => {
                   lineHeight: 1.4,
                 }}
               >
-                {education.keyTreatment}
+                {education?.attributes?.keyTreatment}
               </Typography>
             </Paper>
           </Grid>
@@ -158,13 +158,13 @@ const EducationCard = ({ education, onView, onEdit, onDelete }) => {
                   lineHeight: 1.4,
                 }}
               >
-                {education.generalInstruction}
+                {education?.attributes?.generalInstruction}
               </Typography>
             </Paper>
           </Grid>
 
           {/* Modalities */}
-          <Grid size={{ xs: 12 , sm: 6}}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Paper
               elevation={0}
               sx={{
@@ -195,13 +195,13 @@ const EducationCard = ({ education, onView, onEdit, onDelete }) => {
                   lineHeight: 1.4,
                 }}
               >
-                {education.modalities}
+                {education?.attributes?.modalities}
               </Typography>
             </Paper>
           </Grid>
 
           {/* Restrictions */}
-          <Grid size={{ xs: 12 , sm: 6}}>
+          <Grid size={{ xs: 12, sm: 6 }}>
             <Paper
               elevation={0}
               sx={{
@@ -232,7 +232,7 @@ const EducationCard = ({ education, onView, onEdit, onDelete }) => {
                   lineHeight: 1.4,
                 }}
               >
-                {education.restrictions}
+                {education?.attributes?.restrictions}
               </Typography>
             </Paper>
           </Grid>
@@ -300,7 +300,7 @@ const EducationCard = ({ education, onView, onEdit, onDelete }) => {
         </Button>
       </CardActions>
     </Card>
-  )
-}
+  );
+};
 
-export default EducationCard
+export default EducationCard;

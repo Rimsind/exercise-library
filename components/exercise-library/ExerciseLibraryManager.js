@@ -131,7 +131,7 @@ const ExerciseLibraryManager = ({ data }) => {
   };
 
   return (
-    <Box sx={{ p: { xs: 2, md: 3 } }}>
+    <>
       {/* Header */}
       <Box sx={{ mb: 4 }}>
         <Typography
@@ -202,7 +202,7 @@ const ExerciseLibraryManager = ({ data }) => {
       <Grid container spacing={3}>
         {filteredExercises.length > 0 ? (
           filteredExercises.map((exercise) => (
-            <Grid size={{ xs: 12, sm: 6, md: 3 }} key={exercise.id}>
+            <Grid size={{ xs: 12, sm: 6, md: 4, xl: 3 }} key={exercise.id}>
               <Card
                 sx={{
                   height: "100%",
@@ -381,7 +381,7 @@ const ExerciseLibraryManager = ({ data }) => {
                 sx={{
                   mb: 2,
                   borderRadius: 1,
-                  maxHeight: "300px",
+                  width: "100%",
                   objectFit: "cover",
                 }}
               />
@@ -463,7 +463,7 @@ const ExerciseLibraryManager = ({ data }) => {
           </DialogActions>
         </Dialog>
       )}
-    </Box>
+    </>
   );
 };
 

@@ -1,14 +1,20 @@
-import React from "react";
-import { Box } from "@mui/material";
+"use client";
+
 import PatientEducationLibraryContent from "@/components/PatientEducationLibrary/PatientEducationLibraryContent";
+import { useAuth } from "@/context";
+import { GetDataList } from "@/utils/ApiFunctions";
 // import DashboardLayout from "@/components/rehabdoc-dashboard/layout/DashboardLayout"
 
-export const metadata = {
-  title: "Patient Education Library | RIMSIND",
-  description:
-    "Create and manage patient education materials organized by rehabilitation stage",
-};
-
 export default function PatientEducationLibraryPage() {
-  return <PatientEducationLibraryContent />;
+  const { auth } = useAuth();
+
+  const data = GetDataList({
+    endPoint: "patient-education-libraries",
+    auth: auth,
+  });
+  if (!data) {
+    return <div>Loading...</div>;
+  }
+
+  return <PatientEducationLibraryContent data={data} />;
 }
