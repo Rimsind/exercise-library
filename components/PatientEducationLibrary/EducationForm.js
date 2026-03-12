@@ -37,11 +37,17 @@ const regions = {
   ],
 };
 const stages = ["Acute", "Sub-Acute", "Chronic"];
-const educationTypes = ["General Education", "Region Wise Education"];
+const educationTypes = [
+  "Region Wise Education",
+  "Condition Wise Education",
+  "Stage Wise Education",
+  "Exercise Education",
+  "Lifestyle Education",
+];
 
 const EducationForm = ({ open, onClose, onSubmit, editingData }) => {
   const [formData, setFormData] = useState({
-    educationType: "General Education",
+    educationType: "",
     region: "Upper Extremity",
     area: "Shoulder Girdle",
     title: "",
@@ -56,12 +62,11 @@ const EducationForm = ({ open, onClose, onSubmit, editingData }) => {
   useEffect(() => {
     if (editingData) {
       setFormData({
-        educationType:
-          editingData?.attributes?.educationType || "General Education",
-        region: editingData?.attributes?.region || "Upper Extremity",
-        area: editingData?.attributes?.area || "Shoulder Girdle",
+        educationType: editingData?.attributes?.educationType || "",
+        region: editingData?.attributes?.region || "",
+        area: editingData?.attributes?.area || "",
         title: editingData?.attributes?.title || "",
-        stage: editingData?.attributes?.stage || "Acute",
+        stage: editingData?.attributes?.stage || "",
         keyTreatment: editingData?.attributes?.keyTreatment || "",
         generalInstruction: editingData?.attributes?.generalInstruction || "",
         modalities: editingData?.attributes?.modalities || "",
@@ -211,43 +216,37 @@ const EducationForm = ({ open, onClose, onSubmit, editingData }) => {
             </Select>
           </FormControl>
 
-          {/* Region Selection - Only for Region Wise Education */}
-          {formData.educationType === "Region Wise Education" && (
-            <FormControl fullWidth size="small">
-              <InputLabel>Region</InputLabel>
-              <Select
-                name="region"
-                value={formData.region}
-                onChange={handleChange}
-                label="Region"
-              >
-                {Object.keys(regions).map((region) => (
-                  <MenuItem key={region} value={region}>
-                    {region}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
+          <FormControl fullWidth size="small">
+            <InputLabel>Region</InputLabel>
+            <Select
+              name="region"
+              value={formData.region}
+              onChange={handleChange}
+              label="Region"
+            >
+              {Object.keys(regions).map((region) => (
+                <MenuItem key={region} value={region}>
+                  {region}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
-          {/* Area Selection - Only for Region Wise Education */}
-          {formData.educationType === "Region Wise Education" && (
-            <FormControl fullWidth size="small">
-              <InputLabel>Area</InputLabel>
-              <Select
-                name="area"
-                value={formData.area}
-                onChange={handleChange}
-                label="Area"
-              >
-                {regions[formData.region].map((area) => (
-                  <MenuItem key={area} value={area}>
-                    {area}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
-          )}
+          <FormControl fullWidth size="small">
+            <InputLabel>Area</InputLabel>
+            <Select
+              name="area"
+              value={formData.area}
+              onChange={handleChange}
+              label="Area"
+            >
+              {regions[formData.region].map((area) => (
+                <MenuItem key={area} value={area}>
+                  {area}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
 
           {/* Title Field */}
           <TextField
