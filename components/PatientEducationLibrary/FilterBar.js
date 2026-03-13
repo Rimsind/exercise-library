@@ -48,9 +48,14 @@ const FilterBar = ({
     ],
   }
 
-  const educationTypes = ["General Education", "Region Wise Education"]
-  const stages = ["Acute", "Sub-Acute", "Chronic"]
-
+  const educationTypes = [
+  "Region Wise Education",
+  "Condition Wise Education",
+  "Stage Wise Education",
+  "Exercise Education",
+  "Lifestyle Education",
+];
+  const stages = ["General","Acute", "Sub-Acute", "Chronic","Post-Surgical","Pre-Surgical","Preventive","Rehabilitation"];
   // Debounce search function
   const handleSearchChange = useCallback((value) => {
     setDebouncedSearch(value)
@@ -88,6 +93,14 @@ const FilterBar = ({
         return "#F57C00"
       case "Chronic":
         return "#388E3C"
+      case "Post-Surgical":
+        return "#FF8F00"  
+      case "Pre-Surgical":
+        return "#7B1FA2"
+      case "Preventive":
+        return "#00838F"
+      case "Rehabilitation":
+        return "#4A148C"
       default:
         return "#999"
     }
