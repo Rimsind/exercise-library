@@ -36,7 +36,7 @@ const regions = {
     "Sacroiliac Joint",
   ],
 };
-const stages = ["Acute", "Sub-Acute", "Chronic"];
+const stages = ["General","Acute", "Sub-Acute", "Chronic","Post-Surgical","Pre-Surgical","Preventive","Rehabilitation"];
 const educationTypes = [
   "Region Wise Education",
   "Condition Wise Education",
