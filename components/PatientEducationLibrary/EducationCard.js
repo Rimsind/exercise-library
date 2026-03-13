@@ -29,7 +29,7 @@ const EducationCard = ({ education, onView, onEdit, onDelete }) => {
         return { bg: "#FFF8E1", text: "#FF8F00", border: "#FFC400" };
       case "Pre-Surgical":
         return { bg: "#E1BEE7", text: "#7B1FA2", border: "#BA68C8" };
-      case "Preventive":
+      case "Prevention":
         return { bg: "#E0F7FA", text: "#00838F", border: "#4DD0E1" };
       case "Rehabilitation":
         return { bg: "#F3E5F5", text: "#4A148C", border: "#9C27B0" };

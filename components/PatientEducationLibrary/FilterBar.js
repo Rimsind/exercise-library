@@ -97,7 +97,7 @@ const FilterBar = ({
         return "#FF8F00"  
       case "Pre-Surgical":
         return "#7B1FA2"
-      case "Preventive":
+      case "Prevention":
         return "#00838F"
       case "Rehabilitation":
         return "#4A148C"
