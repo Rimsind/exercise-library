@@ -25,6 +25,15 @@ const EducationTable = ({ educations, onView, onEdit, onDelete }) => {
         return { bg: "#FFF3E0", text: "#F57C00" };
       case "Chronic":
         return { bg: "#E8F5E9", text: "#388E3C" };
+      case "Post-Surgical":
+        return { bg: "#FFF8E1", text: "#FF8F00" };
+      case "Pre-Surgical":
+        return { bg: "#E1BEE7", text: "#7B1FA2" };
+      case "Prevention":
+        return { bg: "#E0F7FA", text: "#00838F" };
+      case "Rehabilitation":
+        return { bg: "#F3E5F5", text: "#4A148C" };
+
       default:
         return { bg: "#F5F5F5", text: "#666" };
     }
