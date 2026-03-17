@@ -17,6 +17,11 @@ import {
   CardMedia,
   Stack,
   Divider,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  Pagination,
 } from "@mui/material";
 import { Add, Edit, Delete, Visibility } from "@mui/icons-material";
 import AddExerciseDialog from "./AddExerciseDialog";
@@ -25,14 +30,16 @@ import { exerciseLibrary } from "@/lib/exerciseLibrary";
 import { DeleteData } from "@/utils/ApiFunctions";
 
 const ExerciseLibraryManager = ({ data }) => {
-  console.log("Exercise Library Data:", data);
-
   const [exercises, setExercises] = useState([]);
   const [openAddDialog, setOpenAddDialog] = useState(false);
   const [openViewDialog, setOpenViewDialog] = useState(false);
   const [selectedExercise, setSelectedExercise] = useState(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [filterCategory, setFilterCategory] = useState("All");
+  const [filterSubCategory, setFilterSubCategory] = useState("All");
+  const [filterPosition, setFilterPosition] = useState("All");
+  const [page, setPage] = useState(1);
+  const pageSize = 12;
 
   // ✅ Format incoming API data once
   useEffect(() => {
@@ -76,16 +83,40 @@ const ExerciseLibraryManager = ({ data }) => {
     "All",
     ...new Set(exercises.map((e) => e.category).filter(Boolean)),
   ];
+  const subCategories = [
+    "All",
+    ...new Set(exercises.map((e) => e.subCategory).filter(Boolean)),
+  ];
+  const positions = [
+    "All",
+    ...new Set(exercises.map((e) => e.position).filter(Boolean)),
+  ];
 
-  // ✅ Filter by search + category
+  // ✅ Filter by search + category + subCategory + position
   const filteredExercises = exercises.filter((exercise) => {
     const matchesSearch =
       exercise.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
       exercise.category.toLowerCase().includes(searchTerm.toLowerCase());
     const matchesCategory =
       filterCategory === "All" || exercise.category === filterCategory;
-    return matchesSearch && matchesCategory;
+    const matchesSubCategory =
+      filterSubCategory === "All" || exercise.subCategory === filterSubCategory;
+    const matchesPosition =
+      filterPosition === "All" || exercise.position === filterPosition;
+    return (
+      matchesSearch && matchesCategory && matchesSubCategory && matchesPosition
+    );
   });
+
+  const pageCount = Math.max(1, Math.ceil(filteredExercises.length / pageSize));
+  const pagedExercises = filteredExercises.slice(
+    (page - 1) * pageSize,
+    page * pageSize,
+  );
+
+  const handlePageChange = (event, value) => {
+    setPage(value);
+  };
 
   // ✅ Handlers
   const handleOpenAddDialog = () => setOpenAddDialog(true);
@@ -130,24 +161,49 @@ const ExerciseLibraryManager = ({ data }) => {
     }
   };
 
+  useEffect(() => {
+    setPage(1);
+  }, [searchTerm, filterCategory, filterSubCategory, filterPosition]);
+
   return (
     <>
       {/* Header */}
-      <Box sx={{ mb: 4 }}>
-        <Typography
-          variant="h4"
-          sx={{
-            fontWeight: 700,
-            color: "#2E5E99",
-            mb: 1,
-          }}
+      <Grid container spacing={2} sx={{ mb: 4 }}>
+        <Grid size={{ xs: 6, md: 9 }}>
+          <Box>
+            <Typography
+              variant="h4"
+              sx={{
+                fontWeight: 700,
+                color: "#2E5E99",
+                mb: 1,
+              }}
+            >
+              Exercise Library Management
+            </Typography>
+            <Typography variant="body1" sx={{ color: "#7ba4d0" }}>
+              Manage home exercise programs for patient rehabilitation
+            </Typography>
+          </Box>
+        </Grid>
+        <Grid
+          size={{ xs: 6, md: 3 }}
+          sx={{ textAlign: { xs: "left", md: "right" } }}
         >
-          Exercise Library Management
-        </Typography>
-        <Typography variant="body1" sx={{ color: "#7ba4d0" }}>
-          Manage home exercise programs for patient rehabilitation
-        </Typography>
-      </Box>
+          <Button
+            variant="contained"
+            startIcon={<Add />}
+            onClick={handleOpenAddDialog}
+            sx={{
+              backgroundColor: "#2E5E99",
+              textTransform: "none",
+              fontSize: "1rem",
+            }}
+          >
+            Add New Exercise
+          </Button>
+        </Grid>
+      </Grid>
 
       {/* Controls */}
       <Box
@@ -159,19 +215,6 @@ const ExerciseLibraryManager = ({ data }) => {
           alignItems: "flex-start",
         }}
       >
-        <Button
-          variant="contained"
-          startIcon={<Add />}
-          onClick={handleOpenAddDialog}
-          sx={{
-            backgroundColor: "#2E5E99",
-            textTransform: "none",
-            fontSize: "1rem",
-          }}
-        >
-          Add New Exercise
-        </Button>
-
         <TextField
           placeholder="Search exercises..."
           value={searchTerm}
@@ -180,28 +223,82 @@ const ExerciseLibraryManager = ({ data }) => {
           sx={{ flexGrow: 1, maxWidth: { xs: "100%", sm: "300px" } }}
         />
 
-        <Box sx={{ display: "flex", gap: 1, flexWrap: "wrap" }}>
-          {categories.map((cat) => (
-            <Chip
-              key={cat}
-              label={cat}
-              onClick={() => setFilterCategory(cat)}
-              variant={filterCategory === cat ? "filled" : "outlined"}
-              sx={{
-                backgroundColor:
-                  filterCategory === cat ? "#2E5E99" : "transparent",
-                color: filterCategory === cat ? "white" : "#2E5E99",
-                borderColor: "#2E5E99",
-              }}
-            />
-          ))}
+        <Box
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexWrap: "wrap",
+            alignItems: "center",
+            width: "100%",
+          }}
+        >
+          <FormControl size="small" sx={{ minWidth: 160 }}>
+            <InputLabel id="category-filter-label">Category</InputLabel>
+            <Select
+              labelId="category-filter-label"
+              value={filterCategory}
+              label="Category"
+              onChange={(e) => setFilterCategory(e.target.value)}
+            >
+              {categories.map((cat) => (
+                <MenuItem key={cat} value={cat}>
+                  {cat}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl size="small" sx={{ minWidth: 180 }}>
+            <InputLabel id="sub-category-filter-label">Sub-Category</InputLabel>
+            <Select
+              labelId="sub-category-filter-label"
+              value={filterSubCategory}
+              label="Sub-Category"
+              onChange={(e) => setFilterSubCategory(e.target.value)}
+            >
+              {subCategories.map((subCat) => (
+                <MenuItem key={subCat} value={subCat}>
+                  {subCat}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <FormControl size="small" sx={{ minWidth: 140 }}>
+            <InputLabel id="position-filter-label">Position</InputLabel>
+            <Select
+              labelId="position-filter-label"
+              value={filterPosition}
+              label="Position"
+              onChange={(e) => setFilterPosition(e.target.value)}
+            >
+              {positions.map((pos) => (
+                <MenuItem key={pos} value={pos}>
+                  {pos}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+          <Button
+            variant="outlined"
+            onClick={() => {
+              setFilterCategory("All");
+              setFilterSubCategory("All");
+              setFilterPosition("All");
+              setSearchTerm("");
+            }}
+            sx={{ textTransform: "none" }}
+          >
+            Reset Filters
+          </Button>
         </Box>
       </Box>
 
       {/* Exercises Grid */}
       <Grid container spacing={3}>
-        {filteredExercises.length > 0 ? (
-          filteredExercises.map((exercise) => (
+        {pagedExercises.length > 0 ? (
+          pagedExercises.map((exercise) => (
             <Grid size={{ xs: 12, sm: 6, md: 4, xl: 3 }} key={exercise.id}>
               <Card
                 sx={{
@@ -213,7 +310,7 @@ const ExerciseLibraryManager = ({ data }) => {
                   },
                 }}
               >
-                {exercise.imageUrl && (
+                {/* {exercise.imageUrl && (
                   <CardMedia
                     component="img"
                     height="200"
@@ -221,7 +318,22 @@ const ExerciseLibraryManager = ({ data }) => {
                     alt={exercise.name}
                     sx={{ objectFit: "cover" }}
                   />
-                )}
+                )} */}
+
+                <Box sx={{ width: "100%", height: "300px" }}>
+                  {exercise.imageUrl && (
+                    <CardMedia
+                      component="img"
+                      image={exercise.imageUrl}
+                      alt={exercise.name}
+                      sx={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "contain",
+                      }}
+                    />
+                  )}
+                </Box>
 
                 <CardContent sx={{ flexGrow: 1 }}>
                   <Typography
@@ -251,11 +363,11 @@ const ExerciseLibraryManager = ({ data }) => {
                       }}
                     />
                     <Chip
-                      label={exercise.difficulty}
+                      label={exercise.position}
                       size="small"
                       sx={{
                         backgroundColor:
-                          exercise.difficulty === "beginner"
+                          exercise.position === "beginner"
                             ? "#c8e6c9"
                             : "#fff9c4",
                         color: "#2E5E99",
@@ -350,6 +462,18 @@ const ExerciseLibraryManager = ({ data }) => {
         )}
       </Grid>
 
+      {filteredExercises.length > pageSize && (
+        <Box sx={{ display: "flex", justifyContent: "center", mt: 3 }}>
+          <Pagination
+            count={pageCount}
+            page={page}
+            onChange={handlePageChange}
+            color="primary"
+            shape="rounded"
+          />
+        </Box>
+      )}
+
       {/* Add Exercise Dialog */}
       <AddExerciseDialog open={openAddDialog} onClose={handleCloseAddDialog} />
 
@@ -373,34 +497,65 @@ const ExerciseLibraryManager = ({ data }) => {
             {selectedExercise.name}
           </DialogTitle>
           <DialogContent sx={{ pt: 3 }}>
-            {selectedExercise.imageUrl && (
-              <CardMedia
-                component="img"
-                image={selectedExercise.imageUrl}
-                alt={selectedExercise.name}
-                sx={{
-                  mb: 2,
-                  borderRadius: 1,
-                  width: "100%",
-                  objectFit: "cover",
-                }}
-              />
-            )}
-
-            <Box sx={{ mb: 2, display: "flex", gap: 1, alignItems: "center" }}>
-              <Chip
-                label={selectedExercise.category}
-                size="small"
-                sx={{ backgroundColor: "#e8f5e9", color: "#2E5E99" }}
-              />
-              {selectedExercise.subCategory && (
-                <Chip
-                  label={selectedExercise.subCategory}
-                  size="small"
-                  sx={{ backgroundColor: "#fff3e0", color: "#2E5E99" }}
+            <Box sx={{ width: "100%", height: "400px" }}>
+              {selectedExercise.imageUrl && (
+                <CardMedia
+                  component="img"
+                  image={selectedExercise.imageUrl}
+                  alt={selectedExercise.name}
+                  sx={{
+                    width: "100%",
+                    height: "100%",
+                    objectFit: "contain",
+                  }}
                 />
               )}
             </Box>
+
+            <Grid container spacing={2} sx={{ mb: 2 }}>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Box>
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    Category:
+                  </Typography>
+                  {selectedExercise.category && (
+                    <Chip
+                      label={selectedExercise.category}
+                      size="small"
+                      color="primary"
+                    />
+                  )}
+                </Box>
+              </Grid>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Box>
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    Sub-Category:
+                  </Typography>
+                  {selectedExercise.subCategory && (
+                    <Chip
+                      label={selectedExercise.subCategory}
+                      size="small"
+                      color="warning"
+                    />
+                  )}
+                </Box>
+              </Grid>
+              <Grid size={{ xs: 12, md: 4 }}>
+                <Box>
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    Position:
+                  </Typography>
+                  {selectedExercise.position && (
+                    <Chip
+                      label={selectedExercise.position}
+                      size="small"
+                      color="secondary"
+                    />
+                  )}
+                </Box>
+              </Grid>
+            </Grid>
 
             <Box sx={{ mb: 2 }}>
               <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
