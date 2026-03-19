@@ -322,6 +322,46 @@ const PatientEducationLibraryContent = ({ data }) => {
         <DialogContent sx={{ pt: 3 }}>
           {viewingData && (
             <Box sx={{ display: "flex", flexDirection: "column", gap: 2 }}>
+              <Grid container spacing={2} mt={2}>
+                <Grid size={6}>
+                  {" "}
+                  <Box>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        fontWeight: 700,
+                        color: "#0046a6",
+                        textTransform: "uppercase",
+                        fontSize: "11px",
+                      }}
+                    >
+                      Region
+                    </Typography>
+                    <Typography sx={{ color: "#333", fontWeight: 600 }}>
+                      {viewingData?.attributes?.region}
+                    </Typography>
+                  </Box>
+                </Grid>
+                <Grid size={6}>
+                  <Box>
+                    <Typography
+                      variant="caption"
+                      sx={{
+                        fontWeight: 700,
+                        color: "#0046a6",
+                        textTransform: "uppercase",
+                        fontSize: "11px",
+                      }}
+                    >
+                      Area
+                    </Typography>
+                    <Typography sx={{ color: "#333", fontWeight: 600 }}>
+                      {viewingData?.attributes?.area}
+                    </Typography>
+                  </Box>
+                </Grid>
+              </Grid>
+
               <Box>
                 <Typography
                   variant="caption"
