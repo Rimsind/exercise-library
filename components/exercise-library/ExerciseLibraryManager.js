@@ -513,10 +513,10 @@ const ExerciseLibraryManager = ({ data }) => {
             </Box>
 
             <Grid container spacing={2} sx={{ mb: 2 }}>
-              <Grid size={{ xs: 12, md: 4 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Box>
                   <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                    Category:
+                    Region:
                   </Typography>
                   {selectedExercise.category && (
                     <Chip
@@ -527,10 +527,10 @@ const ExerciseLibraryManager = ({ data }) => {
                   )}
                 </Box>
               </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Box>
                   <Typography variant="body2" sx={{ fontWeight: 600 }}>
-                    Sub-Category:
+                    Joint:
                   </Typography>
                   {selectedExercise.subCategory && (
                     <Chip
@@ -541,7 +541,21 @@ const ExerciseLibraryManager = ({ data }) => {
                   )}
                 </Box>
               </Grid>
-              <Grid size={{ xs: 12, md: 4 }}>
+              <Grid size={{ xs: 12, md: 6 }}>
+                <Box>
+                  <Typography variant="body2" sx={{ fontWeight: 600 }}>
+                    Movement:
+                  </Typography>
+                  {selectedExercise?.movement && (
+                    <Chip
+                      label={selectedExercise?.movement}
+                      size="small"
+                      color="info"
+                    />
+                  )}
+                </Box>
+              </Grid>
+              <Grid size={{ xs: 12, md: 6 }}>
                 <Box>
                   <Typography variant="body2" sx={{ fontWeight: 600 }}>
                     Position:
@@ -556,7 +570,14 @@ const ExerciseLibraryManager = ({ data }) => {
                 </Box>
               </Grid>
             </Grid>
-
+            <Box sx={{ mb: 2 }}>
+              <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
+                Resistance:
+              </Typography>
+              <Typography variant="body2" sx={{ color: "#475569" }}>
+                {selectedExercise?.resistance}
+              </Typography>
+            </Box>
             <Box sx={{ mb: 2 }}>
               <Typography variant="subtitle2" sx={{ fontWeight: 600, mb: 1 }}>
                 Target Muscles:

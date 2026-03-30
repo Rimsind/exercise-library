@@ -37,7 +37,8 @@ const AddExerciseDialog = ({ open, onClose }) => {
     holdingTimeMax: 10,
     holdingTimeDefault: 5,
     imageUrl: "",
-    difficulty: "beginner",
+    movement: "",
+    resistance: "",
     precautions: [],
   });
 
@@ -46,7 +47,13 @@ const AddExerciseDialog = ({ open, onClose }) => {
   const [currentMuscle, setCurrentMuscle] = useState("");
   const [imagePreview, setImagePreview] = useState("");
 
-  const difficulties = ["beginner", "intermediate", "advanced"];
+  const ResistanceList = [
+    "Without Resistance",
+    "Weight",
+    "Thera Band",
+    "Dumbbell",
+    "Manual Resistance",
+  ];
   const categories = ["Upper Extremity", "Lower Extremity", "Spine"];
 
   const categorySubcategories = {
@@ -162,8 +169,9 @@ const AddExerciseDialog = ({ open, onClose }) => {
           holdingTimeMax: formData.holdingTimeMax,
           holdingTimeDefault: formData.holdingTimeDefault,
           imageUrl: formData.imageUrl,
-          difficulty: formData.difficulty,
+          movement: formData.movement,
           precautions: formData.precautions.join(", "),
+          resistance: formData.resistance,
         },
       };
 
@@ -195,8 +203,9 @@ const AddExerciseDialog = ({ open, onClose }) => {
       holdingTimeMax: 10,
       holdingTimeDefault: 5,
       imageUrl: "",
-      difficulty: "beginner",
+      movement: "",
       precautions: [],
+      resistance: "",
     });
     setCurrentInstruction("");
     setCurrentPrecaution("");
@@ -238,7 +247,7 @@ const AddExerciseDialog = ({ open, onClose }) => {
             </Typography>
           </Grid>
 
-          <Grid size={{ xs: 12, sm: 6 }}>
+          <Grid size={12}>
             <TextField
               fullWidth
               label="Exercise Name *"
@@ -251,12 +260,12 @@ const AddExerciseDialog = ({ open, onClose }) => {
 
           <Grid size={{ xs: 12, sm: 6 }}>
             <FormControl fullWidth size="small">
-              <InputLabel>Category *</InputLabel>
+              <InputLabel>Region *</InputLabel>
               <Select
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                label="Category"
+                label="Region *"
               >
                 {categories.map((cat) => (
                   <MenuItem key={cat} value={cat}>
@@ -270,12 +279,12 @@ const AddExerciseDialog = ({ open, onClose }) => {
           {formData.category && (
             <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth size="small">
-                <InputLabel>Subcategory *</InputLabel>
+                <InputLabel>Joint *</InputLabel>
                 <Select
                   name="subCategory"
                   value={formData.subCategory}
                   onChange={handleChange}
-                  label="Subcategory"
+                  label="Joint"
                 >
                   {categorySubcategories[formData.category]?.map((sub) => (
                     <MenuItem key={sub} value={sub}>
@@ -288,21 +297,14 @@ const AddExerciseDialog = ({ open, onClose }) => {
           )}
 
           <Grid size={{ xs: 12, sm: 6 }}>
-            <FormControl fullWidth size="small">
-              <InputLabel>Difficulty Level</InputLabel>
-              <Select
-                name="difficulty"
-                value={formData.difficulty}
-                onChange={handleChange}
-                label="Difficulty Level"
-              >
-                {difficulties.map((diff) => (
-                  <MenuItem key={diff} value={diff}>
-                    {diff.charAt(0).toUpperCase() + diff.slice(1)}
-                  </MenuItem>
-                ))}
-              </Select>
-            </FormControl>
+            <TextField
+              fullWidth
+              label="Movement"
+              name="movement"
+              value={formData.movement}
+              onChange={handleChange}
+              size="small"
+            />
           </Grid>
 
           <Grid size={{ xs: 12, sm: 6 }}>
@@ -315,6 +317,23 @@ const AddExerciseDialog = ({ open, onClose }) => {
               size="small"
               placeholder="e.g., Lying, Standing, Sitting"
             />
+          </Grid>
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <FormControl fullWidth size="small">
+              <InputLabel>Resistance *</InputLabel>
+              <Select
+                name="resistance"
+                value={formData.resistance}
+                onChange={handleChange}
+                label="Resistance"
+              >
+                {ResistanceList?.map((sub) => (
+                  <MenuItem key={sub} value={sub}>
+                    {sub}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
 
           {/* TARGET MUSCLES */}

@@ -37,8 +37,9 @@ const EditExerciseDialog = ({ open, onClose, exercise, onUpdated }) => {
     holdingTimeMax: 10,
     holdingTimeDefault: 5,
     imageUrl: "",
-    difficulty: "beginner",
+    movement: "",
     precautions: [],
+    resistance: "",
   });
 
   const [currentInstruction, setCurrentInstruction] = useState("");
@@ -46,7 +47,13 @@ const EditExerciseDialog = ({ open, onClose, exercise, onUpdated }) => {
   const [currentMuscle, setCurrentMuscle] = useState("");
   const [imagePreview, setImagePreview] = useState("");
 
-  const difficulties = ["beginner", "intermediate", "advanced"];
+  const ResistanceList = [
+    "Without Resistance",
+    "Weight",
+    "Thera Band",
+    "Dumbbell",
+    "Manual Resistance",
+  ];
   const categories = ["Upper Extremity", "Lower Extremity", "Spine"];
 
   const categorySubcategories = {
@@ -82,8 +89,9 @@ const EditExerciseDialog = ({ open, onClose, exercise, onUpdated }) => {
       holdingTimeMax: exercise.holdingTimeMax || 10,
       holdingTimeDefault: exercise.holdingTimeDefault || 5,
       imageUrl: exercise.imageUrl || "",
-      difficulty: exercise.difficulty || "beginner",
+      movement: exercise.movement || "",
       precautions: exercise.precautions || [],
+      resistance: exercise?.resistance || "",
     });
     setImagePreview(exercise.imageUrl || "");
   }, [exercise]);
@@ -186,8 +194,9 @@ const EditExerciseDialog = ({ open, onClose, exercise, onUpdated }) => {
           holdingTimeMax: formData.holdingTimeMax,
           holdingTimeDefault: formData.holdingTimeDefault,
           imageUrl: formData.imageUrl,
-          difficulty: formData.difficulty,
+          movement: formData.movement,
           precautions: formData.precautions.join(", "),
+          resistance: formData?.resistance,
         },
       };
 
@@ -221,10 +230,11 @@ const EditExerciseDialog = ({ open, onClose, exercise, onUpdated }) => {
         holdingTimeDefault:
           updated?.holdingTimeDefault || formData.holdingTimeDefault,
         imageUrl: updated?.imageUrl || formData.imageUrl,
-        difficulty: updated?.difficulty || formData.difficulty,
+        movement: updated?.movement || formData.movement,
         precautions: updated?.precautions
           ? updated.precautions.split(",").map((p) => p.trim())
           : formData.precautions,
+        resistance: updated?.resistance || formData?.resistance,
       };
 
       onUpdated && onUpdated(updatedExercise);
@@ -276,7 +286,7 @@ const EditExerciseDialog = ({ open, onClose, exercise, onUpdated }) => {
             </Typography>
           </Grid>
 
-          <Grid size={{ xs: 12, sm: 6 }}>
+          <Grid size={12}>
             <TextField
               fullWidth
               label="Exercise Name *"
@@ -289,12 +299,12 @@ const EditExerciseDialog = ({ open, onClose, exercise, onUpdated }) => {
 
           <Grid size={{ xs: 12, sm: 6 }}>
             <FormControl fullWidth size="small">
-              <InputLabel>Category *</InputLabel>
+              <InputLabel>Region *</InputLabel>
               <Select
                 name="category"
                 value={formData.category}
                 onChange={handleChange}
-                label="Category"
+                label="Region *"
               >
                 {categories.map((cat) => (
                   <MenuItem key={cat} value={cat}>
@@ -308,12 +318,12 @@ const EditExerciseDialog = ({ open, onClose, exercise, onUpdated }) => {
           {formData.category && (
             <Grid size={{ xs: 12, sm: 6 }}>
               <FormControl fullWidth size="small">
-                <InputLabel>Subcategory *</InputLabel>
+                <InputLabel>Joint *</InputLabel>
                 <Select
                   name="subCategory"
                   value={formData.subCategory}
                   onChange={handleChange}
-                  label="Subcategory"
+                  label="Joint *"
                 >
                   {categorySubcategories[formData.category]?.map((sub) => (
                     <MenuItem key={sub} value={sub}>
@@ -327,19 +337,14 @@ const EditExerciseDialog = ({ open, onClose, exercise, onUpdated }) => {
 
           <Grid size={{ xs: 12, sm: 6 }}>
             <FormControl fullWidth size="small">
-              <InputLabel>Difficulty Level</InputLabel>
-              <Select
-                name="difficulty"
-                value={formData.difficulty}
+              <TextField
+                fullWidth
+                label="Movement"
+                name="movement"
+                value={formData.movement}
                 onChange={handleChange}
-                label="Difficulty Level"
-              >
-                {difficulties.map((diff) => (
-                  <MenuItem key={diff} value={diff}>
-                    {diff.charAt(0).toUpperCase() + diff.slice(1)}
-                  </MenuItem>
-                ))}
-              </Select>
+                size="small"
+              />
             </FormControl>
           </Grid>
 
@@ -353,6 +358,24 @@ const EditExerciseDialog = ({ open, onClose, exercise, onUpdated }) => {
               size="small"
               placeholder="e.g., Lying, Standing, Sitting"
             />
+          </Grid>
+
+          <Grid size={{ xs: 12, sm: 6 }}>
+            <FormControl fullWidth size="small">
+              <InputLabel>Resistance</InputLabel>
+              <Select
+                name="resistance"
+                value={formData.resistance}
+                onChange={handleChange}
+                label="Resistance"
+              >
+                {ResistanceList.map((res) => (
+                  <MenuItem key={res} value={res}>
+                    {res}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
           </Grid>
 
           {/* TARGET MUSCLES */}
