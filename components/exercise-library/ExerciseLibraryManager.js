@@ -38,6 +38,7 @@ const ExerciseLibraryManager = ({ data }) => {
   const [filterCategory, setFilterCategory] = useState("All");
   const [filterSubCategory, setFilterSubCategory] = useState("All");
   const [filterPosition, setFilterPosition] = useState("All");
+  const [filterResistance, setFilterResistance] = useState("All");
   const [page, setPage] = useState(1);
   const pageSize = 12;
 
@@ -64,6 +65,7 @@ const ExerciseLibraryManager = ({ data }) => {
           inhale: e.breathingInhale || "",
           exhale: e.breathingExhale || "",
         },
+        resistance: e.resistance || "",
         holdingTimeMin: e.holdingTimeMin,
         holdingTimeMax: e.holdingTimeMax,
         holdingTimeDefault: e.holdingTimeDefault,
@@ -91,8 +93,12 @@ const ExerciseLibraryManager = ({ data }) => {
     "All",
     ...new Set(exercises.map((e) => e.position).filter(Boolean)),
   ];
+  const resistances = [
+    "All",
+    ...new Set(exercises.map((e) => e.resistance).filter(Boolean)),
+  ];
 
-  // ✅ Filter by search + category + subCategory + position
+  // ✅ Filter by search + category + subCategory + position + resistance
   const filteredExercises = exercises.filter((exercise) => {
     const matchesSearch =
       exercise.name.toLowerCase().includes(searchTerm.toLowerCase()) ||
@@ -103,8 +109,14 @@ const ExerciseLibraryManager = ({ data }) => {
       filterSubCategory === "All" || exercise.subCategory === filterSubCategory;
     const matchesPosition =
       filterPosition === "All" || exercise.position === filterPosition;
+    const matchesResistance =
+      filterResistance === "All" || exercise.resistance === filterResistance;
     return (
-      matchesSearch && matchesCategory && matchesSubCategory && matchesPosition
+      matchesSearch &&
+      matchesCategory &&
+      matchesSubCategory &&
+      matchesPosition &&
+      matchesResistance
     );
   });
 
@@ -163,7 +175,7 @@ const ExerciseLibraryManager = ({ data }) => {
 
   useEffect(() => {
     setPage(1);
-  }, [searchTerm, filterCategory, filterSubCategory, filterPosition]);
+  }, [searchTerm, filterCategory, filterSubCategory, filterPosition, filterResistance]);
 
   return (
     <>
@@ -233,11 +245,11 @@ const ExerciseLibraryManager = ({ data }) => {
           }}
         >
           <FormControl size="small" sx={{ minWidth: 160 }}>
-            <InputLabel id="category-filter-label">Category</InputLabel>
+            <InputLabel id="category-filter-label">Region</InputLabel>
             <Select
               labelId="category-filter-label"
               value={filterCategory}
-              label="Category"
+              label="Region"
               onChange={(e) => setFilterCategory(e.target.value)}
             >
               {categories.map((cat) => (
@@ -249,11 +261,11 @@ const ExerciseLibraryManager = ({ data }) => {
           </FormControl>
 
           <FormControl size="small" sx={{ minWidth: 180 }}>
-            <InputLabel id="sub-category-filter-label">Sub-Category</InputLabel>
+            <InputLabel id="sub-category-filter-label">Joint</InputLabel>
             <Select
               labelId="sub-category-filter-label"
               value={filterSubCategory}
-              label="Sub-Category"
+              label="Joint"
               onChange={(e) => setFilterSubCategory(e.target.value)}
             >
               {subCategories.map((subCat) => (
@@ -280,12 +292,29 @@ const ExerciseLibraryManager = ({ data }) => {
             </Select>
           </FormControl>
 
+          <FormControl size="small" sx={{ minWidth: 180 }}>
+            <InputLabel id="resistance-filter-label">Resistance</InputLabel>
+            <Select
+              labelId="resistance-filter-label"
+              value={filterResistance}
+              label="Resistance"
+              onChange={(e) => setFilterResistance(e.target.value)}
+            >
+              {resistances.map((resistance) => (
+                <MenuItem key={resistance} value={resistance}>
+                  {resistance}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
           <Button
             variant="outlined"
             onClick={() => {
               setFilterCategory("All");
               setFilterSubCategory("All");
               setFilterPosition("All");
+              setFilterResistance("All");
               setSearchTerm("");
             }}
             sx={{ textTransform: "none" }}
