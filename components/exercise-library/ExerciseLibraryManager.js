@@ -175,7 +175,13 @@ const ExerciseLibraryManager = ({ data }) => {
 
   useEffect(() => {
     setPage(1);
-  }, [searchTerm, filterCategory, filterSubCategory, filterPosition, filterResistance]);
+  }, [
+    searchTerm,
+    filterCategory,
+    filterSubCategory,
+    filterPosition,
+    filterResistance,
+  ]);
 
   return (
     <>
