@@ -74,6 +74,7 @@ const ExerciseLibraryManager = ({ data }) => {
         precautions: e.precautions
           ? e.precautions.split(",").map((p) => p.trim())
           : [],
+        movement: e.movement,
       };
     });
 
@@ -581,9 +582,9 @@ const ExerciseLibraryManager = ({ data }) => {
                   <Typography variant="body2" sx={{ fontWeight: 600 }}>
                     Movement:
                   </Typography>
-                  {selectedExercise?.movement && (
+                  {selectedExercise.movement && (
                     <Chip
-                      label={selectedExercise?.movement}
+                      label={selectedExercise.movement}
                       size="small"
                       color="info"
                     />
