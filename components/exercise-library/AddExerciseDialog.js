@@ -53,6 +53,7 @@ const AddExerciseDialog = ({ open, onClose }) => {
     "Thera Band",
     "Dumbbell",
     "Manual Resistance",
+    "Gym Ball",
   ];
   const categories = ["Upper Extremity", "Lower Extremity", "Spine"];
 
