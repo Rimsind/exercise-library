@@ -54,6 +54,10 @@ const EditExerciseDialog = ({ open, onClose, exercise, onUpdated }) => {
     "Dumbbell",
     "Manual Resistance",
     "Gym Ball",
+    "Digi-Flex and dowel",
+    "Thera Putty",
+    "Hand Gripper",
+    "Ball",
   ];
   const categories = ["Upper Extremity", "Lower Extremity", "Spine"];
 
